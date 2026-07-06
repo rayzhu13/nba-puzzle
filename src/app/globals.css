@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+/*
+  DESIGN TOKENS — "Shot Clock" identity
+  Subject: a weekly NBA guessing puzzle. The whole UI borrows from the
+  broadcast scoreboard / shot-clock display world: dark arena background,
+  a hot shot-clock orange for the active/urgent accent, a segmented
+  star meter that echoes a shot-clock countdown, and a monospace face
+  reserved strictly for numbers (ratings, stats, puzzle number) so digits
+  always read like a readout, not body copy.
+*/
+
+:root {
+  --ink: #0b0e14;
+  --panel: #12161f;
+  --panel-raised: #1a1f2b;
+  --line: #262c3a;
+  --court: #f4f6f8;
+  --court-dim: #97a0b3;
+  --accent: #ff4b2b;
+  --accent-dim: #7a2a1c;
+  --positive: #33c17a;
+  --strike: #e5384d;
+  --strike-dim: #3a1c20;
+
+  --font-display: "Anton", "Arial Narrow", sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", monospace;
+}
+
+html {
+  background: var(--ink);
+}
+
+body {
+  background: var(--ink);
+  color: var(--court);
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.court-grain {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.015) 0px,
+    rgba(255, 255, 255, 0.015) 1px,
+    transparent 1px,
+    transparent 14px
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
