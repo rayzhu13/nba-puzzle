@@ -34,8 +34,8 @@ create table players (
   search_name   text generated always as (lower(name)) stored
 );
 
-create index players_search_idx on players using gin (search_name gin_trgm_ops);
 create extension if not exists pg_trgm;
+create index players_search_idx on players using gin (search_name gin_trgm_ops);
 
 -- ---------- puzzles ----------
 create table puzzles (
@@ -66,11 +66,11 @@ create table puzzle_slots (
 
 create index puzzle_slots_puzzle_idx on puzzle_slots(puzzle_id);
 
+create extension if not exists moddatetime;
+
 create trigger set_updated_at
 before update on puzzles
 for each row execute procedure moddatetime(updated_at);
-
-create extension if not exists moddatetime;
 
 -- ---------- row level security ----------
 alter table teams enable row level security;
