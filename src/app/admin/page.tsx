@@ -29,13 +29,22 @@ export default async function AdminPage() {
           <h1 className="font-display text-3xl" style={{ color: "var(--court)" }}>
             Puzzle admin
           </h1>
-          <Link
-            href="/admin/new"
-            className="rounded-md px-4 py-2 font-medium"
-            style={{ background: "var(--accent)", color: "var(--ink)" }}
-          >
-            + New puzzle
-          </Link>
+          <div className="flex gap-3">
+            <Link
+              href="/admin/players"
+              className="rounded-md border px-4 py-2 font-medium"
+              style={{ borderColor: "var(--line)", color: "var(--court)" }}
+            >
+              Manage players
+            </Link>
+            <Link
+              href="/admin/new"
+              className="rounded-md px-4 py-2 font-medium"
+              style={{ background: "var(--accent)", color: "var(--ink)" }}
+            >
+              + New puzzle
+            </Link>
+          </div>
         </div>
 
         <div className="overflow-hidden rounded-lg border" style={{ borderColor: "var(--line)" }}>
