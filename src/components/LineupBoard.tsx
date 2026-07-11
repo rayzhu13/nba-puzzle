@@ -5,6 +5,7 @@ import type { PublicPuzzle } from "@/types/puzzle";
 import { useGameState } from "@/lib/useGameState";
 import SearchableDropdown, { type SearchOption } from "@/components/SearchableDropdown";
 import StarMeter from "@/components/StarMeter";
+import CourtBackground from "@/components/CourtBackground";
 
 // Positions laid out to mirror a half-court view: PG top, wings on either
 // side, PF/C along the baseline — matches the reference screenshot.
@@ -38,21 +39,24 @@ export default function LineupBoard({ puzzle }: { puzzle: PublicPuzzle }) {
       </div>
 
       <div
-        className="court-grain relative grid aspect-square w-full grid-cols-3 grid-rows-3 gap-4 rounded-xl border p-8"
-        style={{ background: "var(--panel)", borderColor: "var(--line)" }}
+        className="relative aspect-square w-full overflow-hidden rounded-xl border"
+        style={{ borderColor: "var(--line)" }}
       >
-        {puzzle.slots.map((slot) => {
-          const clue = slot.clue_data as { position: keyof typeof POSITION_LAYOUT };
-          const layoutClass = POSITION_LAYOUT[clue.position] ?? "";
-          return (
-            <div key={slot.id} className={`flex flex-col items-center gap-2 ${layoutClass}`}>
-              <span className="font-display text-sm" style={{ color: "var(--court-dim)" }}>
-                {clue.position}
-              </span>
-              <ClueContent puzzleType={puzzle.type} clueData={slot.clue_data} />
-            </div>
-          );
-        })}
+        <CourtBackground />
+        <div className="relative z-10 grid h-full w-full grid-cols-3 grid-rows-3 gap-4 p-8">
+          {puzzle.slots.map((slot) => {
+            const clue = slot.clue_data as { position: keyof typeof POSITION_LAYOUT };
+            const layoutClass = POSITION_LAYOUT[clue.position] ?? "";
+            return (
+              <div key={slot.id} className={`flex flex-col items-center gap-2 ${layoutClass}`}>
+                <span className="font-display text-sm" style={{ color: "var(--court-dim)" }}>
+                  {clue.position}
+                </span>
+                <ClueContent puzzleType={puzzle.type} clueData={slot.clue_data} />
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       <div className="mt-6">
