@@ -16,8 +16,7 @@ interface LineupSlotDraft {
 }
 
 interface GridSlotDraft {
-  team_logo: string;
-  team_name: string;
+  team: SearchOption | null;
   answer: SearchOption | null;
   stat_value: string;
 }
@@ -75,7 +74,7 @@ export default function PuzzleForm({ initial }: { initial?: PuzzleFormInitial })
   function addGridSlot() {
     setForm((f) => ({
       ...f,
-      gridSlots: [...f.gridSlots, { team_logo: "", team_name: "", answer: null, stat_value: "" }],
+      gridSlots: [...f.gridSlots, { team: null, answer: null, stat_value: "" }],
     }));
   }
 
@@ -113,15 +112,20 @@ export default function PuzzleForm({ initial }: { initial?: PuzzleFormInitial })
             : { position: s.position, gif_url: s.gif_url },
       }));
     } else {
-      if (form.gridSlots.some((s) => !s.answer || !s.team_logo)) {
-        setError("Every grid slot needs a team logo URL and a selected player answer.");
+      if (form.gridSlots.some((s) => !s.answer || !s.team)) {
+        setError("Every grid slot needs a team selected and a player answer.");
         setSaving(false);
         return;
       }
       slots = form.gridSlots.map((s, i) => ({
         slot_index: i,
         answer_id: s.answer!.id,
-        clue_data: { team_logo: s.team_logo, team_name: s.team_name, stat_value: s.stat_value || undefined },
+        clue_data: {
+          team_id: s.team!.id,
+          team_logo: s.team!.imageUrl,
+          team_name: s.team!.label,
+          stat_value: s.stat_value || undefined,
+        },
       }));
     }
 
@@ -285,12 +289,11 @@ export default function PuzzleForm({ initial }: { initial?: PuzzleFormInitial })
         <section className="space-y-4 rounded-lg border p-6" style={{ background: "var(--panel)", borderColor: "var(--line)" }}>
           {form.gridSlots.map((slot, i) => (
             <div key={i} className="grid grid-cols-[1fr_1fr_1fr_auto] gap-3 rounded-md border p-4" style={{ borderColor: "var(--line)" }}>
-              <input
-                value={slot.team_logo}
-                onChange={(e) => updateGridSlot(i, { team_logo: e.target.value })}
-                placeholder="Team logo URL"
-                className="rounded-md border px-3 py-2"
-                style={inputStyle}
+              <SearchableDropdown
+                kind="team"
+                clearOnSelect={false}
+                placeholder={slot.team?.label ?? "Team…"}
+                onSelect={(opt) => updateGridSlot(i, { team: opt })}
               />
               <SearchableDropdown
                 kind="player"

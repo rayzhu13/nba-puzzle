@@ -82,11 +82,12 @@ export default async function EditPuzzlePage({ params }: { params: Promise<{ id:
       lineupAnswer: null,
       lineupSlots: [],
       gridSlots: typedSlots.map((s) => {
-        const clue = s.clue_data as { team_logo?: string; team_name?: string; stat_value?: string };
+        const clue = s.clue_data as { team_id?: string; team_logo?: string; team_name?: string; stat_value?: string };
         const player = players?.find((p) => p.id === s.answer_id);
         return {
-          team_logo: clue.team_logo ?? "",
-          team_name: clue.team_name ?? "",
+          team: clue.team_id
+            ? { id: clue.team_id, label: clue.team_name ?? "", imageUrl: clue.team_logo }
+            : null,
           stat_value: clue.stat_value ?? "",
           answer: player ? { id: player.id, label: player.name, imageUrl: player.headshot_url ?? undefined } : null,
         };

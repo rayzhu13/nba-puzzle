@@ -48,6 +48,7 @@ export interface LineupGifClue {
 }
 
 export interface GridClue {
+  team_id: string; // the actual team row this logo/name came from
   team_logo: string; // logo URL shown for this slot
   team_name?: string; // used in admin form only, not required for render
   stat_value?: string; // optional display value revealed after a correct/final guess, e.g. "34.2 PPG"
