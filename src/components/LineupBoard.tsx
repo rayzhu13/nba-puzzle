@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
 import type { PublicPuzzle } from "@/types/puzzle";
 import { useGameState } from "@/lib/useGameState";
 import SearchableDropdown, { type SearchOption } from "@/components/SearchableDropdown";
 import StarMeter from "@/components/StarMeter";
 import CourtBackground from "@/components/CourtBackground";
+import LossOptions from "@/components/LossOptions";
 
 // Positions laid out to mirror a half-court view: PG top, wings on either
 // side, PF/C along the baseline — matches the reference screenshot.
@@ -20,13 +20,6 @@ const POSITION_LAYOUT: Record<string, string> = {
 export default function LineupBoard({ puzzle }: { puzzle: PublicPuzzle }) {
   const game = useGameState(puzzle.id, puzzle.max_strikes, 1);
   const solvedAnswer = game.solved[0];
-
-  useEffect(() => {
-    if (game.gameOver && !solvedAnswer) {
-      game.revealSlot(0);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [game.gameOver]);
 
   function handleSelect(option: SearchOption) {
     game.submitGuess(0, option.id);
@@ -59,9 +52,20 @@ export default function LineupBoard({ puzzle }: { puzzle: PublicPuzzle }) {
         </div>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-6 space-y-4">
         {solvedAnswer ? (
           <ResultBanner solved={!game.gameOver || game.isComplete} answer={solvedAnswer} />
+        ) : game.gameOver ? (
+          <>
+            {game.practiceMode && (
+              <SearchableDropdown kind="team" onSelect={handleSelect} disabled={false} />
+            )}
+            <LossOptions
+              onReveal={() => game.revealSlot(0)}
+              onKeepTrying={game.enablePracticeMode}
+              practiceMode={game.practiceMode}
+            />
+          </>
         ) : (
           <SearchableDropdown kind="team" onSelect={handleSelect} disabled={game.gameOver} />
         )}

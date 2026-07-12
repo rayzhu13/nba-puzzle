@@ -1,22 +1,21 @@
 "use client";
 
-import { useEffect } from "react";
 import type { PublicPuzzle } from "@/types/puzzle";
 import { useGameState } from "@/lib/useGameState";
 import SearchableDropdown, { type SearchOption } from "@/components/SearchableDropdown";
 import StarMeter from "@/components/StarMeter";
+import LossOptions from "@/components/LossOptions";
 
 export default function GridBoard({ puzzle }: { puzzle: PublicPuzzle }) {
   const game = useGameState(puzzle.id, puzzle.max_strikes, puzzle.slots.length);
 
-  useEffect(() => {
-    if (game.gameOver) {
-      puzzle.slots.forEach((slot) => {
-        if (!game.solved[slot.slot_index]) game.revealSlot(slot.slot_index);
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [game.gameOver]);
+  async function revealAll() {
+    await Promise.all(
+      puzzle.slots
+        .filter((slot) => !game.solved[slot.slot_index])
+        .map((slot) => game.revealSlot(slot.slot_index))
+    );
+  }
 
   return (
     <div className="mx-auto w-full max-w-4xl">
@@ -79,7 +78,7 @@ export default function GridBoard({ puzzle }: { puzzle: PublicPuzzle }) {
                 <SearchableDropdown
                   kind="player"
                   placeholder="Player…"
-                  disabled={game.gameOver}
+                  disabled={game.gameOver && !game.practiceMode}
                   onSelect={(opt: SearchOption) => game.submitGuess(slot.slot_index, opt.id)}
                 />
               )}
@@ -87,6 +86,17 @@ export default function GridBoard({ puzzle }: { puzzle: PublicPuzzle }) {
           );
         })}
       </div>
+
+      {game.gameOver && !game.isComplete && (
+        <div className="mt-6">
+          <LossOptions
+            onReveal={revealAll}
+            onKeepTrying={game.enablePracticeMode}
+            practiceMode={game.practiceMode}
+            label="Reveal answers"
+          />
+        </div>
+      )}
     </div>
   );
 }

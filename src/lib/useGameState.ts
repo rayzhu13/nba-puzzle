@@ -22,14 +22,26 @@ export function useGameState(puzzleId: string, maxStrikes: 3 | 5, slotsToSolve: 
   const [solved, setSolved] = useState<Record<number, RevealedAnswer>>({});
   const [wrongFlash, setWrongFlash] = useState<number | null>(null);
   const [gameOver, setGameOver] = useState(false);
+  // Once the player clicks "Keep trying" after a loss, guesses are still
+  // allowed (for fun / to see if they'd have gotten it) but no longer
+  // affect strikes or score — both stay frozen at whatever they were when
+  // the game ended.
+  const [practiceMode, setPracticeMode] = useState(false);
 
   const stars = starsForStrikes(strikesUsed, maxStrikes);
   const solvedCount = Object.keys(solved).length;
   const isComplete = solvedCount >= slotsToSolve;
 
+  const enablePracticeMode = useCallback(() => {
+    setPracticeMode(true);
+  }, []);
+
   const submitGuess = useCallback(
     async (slotIndex: number, guessId: string) => {
-      if (gameOver || isComplete) return;
+      // Normally a finished game blocks further guesses entirely. In
+      // practice mode we deliberately let them through — just without
+      // touching strikes/score below.
+      if ((gameOver && !practiceMode) || isComplete) return;
 
       const res = await fetch("/api/guess", {
         method: "POST",
@@ -46,7 +58,12 @@ export function useGameState(puzzleId: string, maxStrikes: 3 | 5, slotsToSolve: 
       setWrongFlash(slotIndex);
       setTimeout(() => setWrongFlash(null), 500);
 
-     const nextStrikes = strikesUsed + 1;
+      if (practiceMode) {
+        // Game's already lost — no strike/score changes while practicing.
+        return { correct: false as const };
+      }
+
+      const nextStrikes = strikesUsed + 1;
       setStrikesUsed(nextStrikes);
 
       // max_strikes is the number of misses still allowed to continue —
@@ -57,7 +74,7 @@ export function useGameState(puzzleId: string, maxStrikes: 3 | 5, slotsToSolve: 
       }
       return { correct: false as const };
     },
-    [gameOver, isComplete, puzzleId, strikesUsed, maxStrikes]
+    [gameOver, isComplete, practiceMode, puzzleId, strikesUsed, maxStrikes]
   );
 
   const revealSlot = useCallback(
@@ -82,6 +99,8 @@ export function useGameState(puzzleId: string, maxStrikes: 3 | 5, slotsToSolve: 
     wrongFlash,
     gameOver,
     isComplete,
+    practiceMode,
+    enablePracticeMode,
     submitGuess,
     revealSlot,
   };
