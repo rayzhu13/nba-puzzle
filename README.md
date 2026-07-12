@@ -1,4 +1,4 @@
-# Weekly NBA Puzzle
+# Hoopdle
 
 A weekly-rotating NBA guessing game. Next.js (App Router) + TypeScript + Supabase (Postgres + Auth) + Vercel Cron.
 

@@ -20,8 +20,8 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Weekly NBA Puzzle",
-  description: "A new NBA guessing puzzle every week.",
+  title: "Hoopdle",
+  description: "Hoopdle — a new NBA guessing puzzle every week.",
 };
 
 export default function RootLayout({

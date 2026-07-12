@@ -37,7 +37,7 @@ export default async function HomePage() {
     <main className="min-h-screen px-4 py-12 sm:py-16">
       <header className="mx-auto mb-10 max-w-4xl text-center">
         <p className="font-mono text-xs tracking-widest" style={{ color: "var(--accent)" }}>
-          WEEKLY NBA PUZZLE
+          HOOPDLE
         </p>
         <h1 className="font-display mt-2 text-4xl sm:text-5xl" style={{ color: "var(--court)" }}>
           {puzzle ? puzzle.title : "New puzzle drops soon"}
