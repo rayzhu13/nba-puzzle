@@ -107,8 +107,19 @@ export interface PublicPuzzle extends Omit<Puzzle, never> {
 
 // ---------- scoring ----------
 // Stars start at 5 and step down evenly across max_strikes wrong guesses.
+// ---------- scoring ----------
+// Hardcoded score tables rather than a formula — the 3-strike system isn't
+// a simple even split of the 5-strike one (2 stars lost on strikes 2 and 3,
+// not 1), so it's specified explicitly per strike count instead of derived.
+const STAR_TABLE: Record<3 | 5, number[]> = {
+  5: [5, 4, 3, 2, 1, 0],
+  3: [5, 4, 2, 0],
+};
+
 export function starsForStrikes(strikesUsed: number, maxStrikes: 3 | 5): number {
-  const penaltyPerStrike = 5 / maxStrikes;
-  const stars = 5 - strikesUsed * penaltyPerStrike;
-  return Math.max(0, Math.round(stars * 10) / 10);
+  const table = STAR_TABLE[maxStrikes];
+  // Clamp to the table's last entry (0) for any strike beyond max_strikes —
+  // covers the one "extra" wrong guess that actually ends the game.
+  const index = Math.min(strikesUsed, table.length - 1);
+  return table[index];
 }

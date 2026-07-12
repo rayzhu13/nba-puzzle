@@ -46,10 +46,13 @@ export function useGameState(puzzleId: string, maxStrikes: 3 | 5, slotsToSolve: 
       setWrongFlash(slotIndex);
       setTimeout(() => setWrongFlash(null), 500);
 
-      const nextStrikes = strikesUsed + 1;
+     const nextStrikes = strikesUsed + 1;
       setStrikesUsed(nextStrikes);
 
-      if (nextStrikes >= maxStrikes) {
+      // max_strikes is the number of misses still allowed to continue —
+      // the game only ends on the miss AFTER that (5 allowed -> ends on
+      // the 6th miss, 3 allowed -> ends on the 4th), not at max_strikes itself.
+      if (nextStrikes > maxStrikes) {
         setGameOver(true);
       }
       return { correct: false as const };

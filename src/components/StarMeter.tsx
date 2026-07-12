@@ -32,7 +32,7 @@ export default function StarMeter({
       <div className="font-mono text-sm" style={{ color: "var(--court-dim)" }}>
         <span style={{ color: "var(--court)" }}>{stars.toFixed(1)}</span> / 5.0
         <span className="ml-3">
-          {strikesUsed}/{maxStrikes} strikes
+          {Math.min(strikesUsed, maxStrikes)}/{maxStrikes} strikes
         </span>
       </div>
     </div>
