@@ -35,7 +35,7 @@ export default function GridBoard({ puzzle }: { puzzle: PublicPuzzle }) {
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
         {puzzle.slots.map((slot) => {
-          const clue = slot.clue_data as { team_logo?: string };
+          const clue = slot.clue_data as { team_logo?: string; stat_value?: string };
           const answer = game.solved[slot.slot_index];
           const isWrongFlash = game.wrongFlash === slot.slot_index;
 
@@ -48,6 +48,14 @@ export default function GridBoard({ puzzle }: { puzzle: PublicPuzzle }) {
                 borderColor: isWrongFlash ? "var(--strike)" : "var(--line)",
               }}
             >
+              {clue.stat_value && (
+                <span
+                  className="font-mono rounded px-2 py-0.5 text-xs font-semibold"
+                  style={{ background: "var(--panel-raised)", color: "var(--accent)" }}
+                >
+                  {clue.stat_value}
+                </span>
+              )}
               {clue.team_logo && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={clue.team_logo} alt="" className="h-12 w-12 object-contain" />
