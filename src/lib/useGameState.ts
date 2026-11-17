@@ -20,6 +20,9 @@ export interface RevealedAnswer {
 export function useGameState(puzzleId: string, maxStrikes: 3 | 5, slotsToSolve: number) {
   const [strikesUsed, setStrikesUsed] = useState(0);
   const [solved, setSolved] = useState<Record<number, RevealedAnswer>>({});
+  // Slots whose answer was handed over via "Reveal answers" rather than
+  // guessed — shown on the board without the green "solved" treatment.
+  const [revealed, setRevealed] = useState<Record<number, true>>({});
   const [wrongFlash, setWrongFlash] = useState<number | null>(null);
   const [gameOver, setGameOver] = useState(false);
   // Once the player clicks "Keep trying" after a loss, guesses are still
@@ -86,6 +89,7 @@ export function useGameState(puzzleId: string, maxStrikes: 3 | 5, slotsToSolve: 
       });
       const data = await res.json();
       if (data.answer) {
+        setRevealed((prev) => ({ ...prev, [slotIndex]: true }));
         setSolved((prev) => ({ ...prev, [slotIndex]: data.answer }));
       }
     },
@@ -96,6 +100,7 @@ export function useGameState(puzzleId: string, maxStrikes: 3 | 5, slotsToSolve: 
     strikesUsed,
     stars,
     solved,
+    revealed,
     wrongFlash,
     gameOver,
     isComplete,

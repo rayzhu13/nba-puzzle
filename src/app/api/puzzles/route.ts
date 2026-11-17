@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
   if (!body) return NextResponse.json({ error: "invalid JSON" }, { status: 400 });
 
-  const { type, title, category_label, max_strikes, week_number, go_live_at, status, slots } = body;
+  const { type, title, category_label, max_strikes, week_number, season, go_live_at, status, slots } = body;
 
   if (!type || !title || !Array.isArray(slots) || slots.length === 0) {
     return NextResponse.json({ error: "type, title, and at least one slot are required" }, { status: 400 });
@@ -32,6 +32,9 @@ export async function POST(req: NextRequest) {
       week_number: week_number ?? null,
       go_live_at: go_live_at ?? null,
       status: status ?? "draft",
+      // Only send season when set, so saving still works on databases that
+      // haven't run supabase/migrations/add_puzzle_season.sql yet.
+      ...(season ? { season } : {}),
     })
     .select()
     .single();

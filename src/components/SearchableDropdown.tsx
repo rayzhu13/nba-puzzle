@@ -12,6 +12,8 @@ export interface SearchOption {
 interface SearchableDropdownProps {
   kind: "team" | "player";
   placeholder?: string;
+  /** Accessible name for the input, e.g. "Guess for rank 1, 33.5 PPG" */
+  ariaLabel?: string;
   disabled?: boolean;
   onSelect: (option: SearchOption) => void;
   /** Called after every selection so the parent can reset input if needed */
@@ -26,6 +28,7 @@ interface SearchableDropdownProps {
 export default function SearchableDropdown({
   kind,
   placeholder,
+  ariaLabel,
   disabled,
   onSelect,
   clearOnSelect = true,
@@ -102,6 +105,7 @@ export default function SearchableDropdown({
         type="text"
         value={query}
         disabled={disabled}
+        aria-label={ariaLabel}
         placeholder={placeholder ?? (kind === "team" ? "Type a team name…" : "Type a player name…")}
         onChange={(e) => {
           const value = e.target.value;

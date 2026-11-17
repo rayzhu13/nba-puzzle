@@ -88,6 +88,7 @@ export interface Puzzle {
   category_label: string | null;
   status: PuzzleStatus;
   week_number: number | null;
+  season?: string | null; // e.g. "2025-26" — optional until the add_puzzle_season migration is run
   go_live_at: string | null;
   max_strikes: 3 | 5;
   created_at: string;

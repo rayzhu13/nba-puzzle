@@ -44,7 +44,8 @@ create table puzzles (
   title           text not null,               -- "Guess the Team: Career Path Lineup"
   category_label  text,                        -- e.g. "Highest PPG This Season" (grid types)
   status          puzzle_status not null default 'draft',
-  week_number     int,                          -- e.g. 14 -> "Puzzle #014"
+  week_number     int,                          -- e.g. 12 -> "Week 12"
+  season          text,                         -- e.g. "2025-26" -> "2025–26 Season"
   go_live_at      timestamptz,
   max_strikes     int not null default 5 check (max_strikes in (3, 5)),
   created_at      timestamptz not null default now(),

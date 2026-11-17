@@ -28,6 +28,7 @@ export interface PuzzleFormInitial {
   category_label: string;
   max_strikes: 3 | 5;
   week_number: string;
+  season: string;
   go_live_at: string;
   status: PuzzleStatus;
   lineupAnswer: SearchOption | null;
@@ -48,6 +49,7 @@ const defaultInitial: PuzzleFormInitial = {
   category_label: "",
   max_strikes: 5,
   week_number: "",
+  season: "",
   go_live_at: "",
   status: "draft",
   lineupAnswer: null,
@@ -135,6 +137,7 @@ export default function PuzzleForm({ initial }: { initial?: PuzzleFormInitial })
       category_label: form.category_label || null,
       max_strikes: form.max_strikes,
       week_number: form.week_number ? Number(form.week_number) : null,
+      season: form.season.trim() || null,
       go_live_at: form.go_live_at ? new Date(form.go_live_at).toISOString() : null,
       status,
       slots,
@@ -201,7 +204,7 @@ export default function PuzzleForm({ initial }: { initial?: PuzzleFormInitial })
           </Field>
         )}
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           <Field label="Max strikes">
             <select
               value={form.max_strikes}
@@ -218,6 +221,15 @@ export default function PuzzleForm({ initial }: { initial?: PuzzleFormInitial })
               type="number"
               value={form.week_number}
               onChange={(e) => setForm((f) => ({ ...f, week_number: e.target.value }))}
+              className="w-full rounded-md border px-3 py-2"
+              style={inputStyle}
+            />
+          </Field>
+          <Field label="Season">
+            <input
+              value={form.season}
+              onChange={(e) => setForm((f) => ({ ...f, season: e.target.value }))}
+              placeholder="2025-26"
               className="w-full rounded-md border px-3 py-2"
               style={inputStyle}
             />

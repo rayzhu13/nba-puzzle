@@ -33,12 +33,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const body = await req.json().catch(() => null);
   if (!body) return NextResponse.json({ error: "invalid JSON" }, { status: 400 });
 
-  const { type, title, category_label, max_strikes, week_number, go_live_at, status, slots } = body;
+  const { type, title, category_label, max_strikes, week_number, season, go_live_at, status, slots } = body;
   const supabase = createAdminSupabase();
 
   const { error: updateError } = await supabase
     .from("puzzles")
-    .update({ type, title, category_label, max_strikes, week_number, go_live_at, status })
+    .update({
+      type, title, category_label, max_strikes, week_number, go_live_at, status,
+      // See POST: omit when empty so un-migrated databases keep working.
+      ...(season ? { season } : {}),
+    })
     .eq("id", id);
 
   if (updateError) return NextResponse.json({ error: updateError.message }, { status: 500 });

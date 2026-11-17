@@ -30,23 +30,39 @@ async function getLivePuzzle(): Promise<PublicPuzzle | null> {
   };
 }
 
+// "Week 12 · 2025–26 Season" — built from whichever parts the puzzle has.
+function formatEditionLabel(puzzle: PublicPuzzle | null): string | null {
+  if (!puzzle) return null;
+  const parts: string[] = [];
+  if (puzzle.week_number != null) parts.push(`Week ${puzzle.week_number}`);
+  if (puzzle.season) parts.push(`${puzzle.season.replace("-", "–")} Season`);
+  return parts.length ? parts.join(" · ") : null;
+}
+
 export default async function HomePage() {
   const puzzle = await getLivePuzzle();
+  const editionLabel = formatEditionLabel(puzzle);
 
   return (
     <main className="min-h-screen px-4 py-12 sm:py-16">
       <header className="mx-auto mb-10 max-w-4xl text-center">
-        <p className="font-mono text-xs tracking-widest" style={{ color: "var(--accent)" }}>
-          HOOPDLE
-        </p>
-        <h1 className="font-display mt-2 text-4xl sm:text-5xl" style={{ color: "var(--court)" }}>
-          {puzzle ? puzzle.title : "New puzzle drops soon"}
-        </h1>
-        {puzzle?.week_number != null && (
-          <p className="font-mono mt-2 text-sm" style={{ color: "var(--court-dim)" }}>
-            PUZZLE #{String(puzzle.week_number).padStart(3, "0")}
+        {editionLabel && (
+          <p
+            className="font-mono text-xs uppercase tracking-widest"
+            style={{ color: "var(--court-dim)" }}
+          >
+            {editionLabel}
           </p>
         )}
+        <h1
+          className="font-display mt-1 text-6xl leading-none sm:text-7xl md:text-8xl"
+          style={{ color: "var(--accent)" }}
+        >
+          HOOPDLE
+        </h1>
+        <p className="mx-auto mt-4 max-w-xl text-base sm:text-lg" style={{ color: "var(--court)" }}>
+          {puzzle ? puzzle.title : "New puzzle drops soon"}
+        </p>
       </header>
 
       {!puzzle && (
